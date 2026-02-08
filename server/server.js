@@ -17,7 +17,7 @@ const commentRoutes = require('./routes/commentRoutes');
 app.use(cors({
   origin: [
     'http://localhost:5173',                     // Allow your local frontend
-    'https://bug-tracker-livid-nine.vercel.app/'   // ⚠️ REPLACE THIS with your actual Vercel URL   
+    'https://bug-tracker-livid-nine.vercel.app'   // ⚠️ REPLACE THIS with your actual Vercel URL   
   ],
   credentials: true, // Allows sending tokens/cookies
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed methods
