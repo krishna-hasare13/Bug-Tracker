@@ -215,42 +215,38 @@ VITE_API_BASE_URL=http://localhost:3001/api
 
 ## Live Deployment
 
-### Prerequisites
-- Vercel account (frontend)
-- Heroku/Railway/Render account (backend)
-- Supabase project
+### Live Application Links
 
-### Deploy to Vercel (Frontend)
+- **Frontend (Vercel):** https://bug-tracker-livid-nine.vercel.app/login
+- **Backend (Render):** https://bug-tracker-cl1u.onrender.com/
 
-1. **Connect repository to Vercel:**
-   ```bash
-   vercel --prod
-   ```
-   Or use Vercel Dashboard → Import Project
+⚠️ **Important Note:** The backend is deployed on Render's free tier, which may enter sleep mode after inactivity. The backend needs to be "woken up" before accessing the frontend. You may see a loading delay on the first request.
 
-2. **Configure environment variables in Vercel:**
-   - `VITE_SUPABASE_URL`
-   - `VITE_SUPABASE_KEY`
-   - `VITE_API_BASE_URL` (production backend URL)
+### Accessing the Live Application
 
-3. **Deploy:**
-   - Vercel automatically deploys on push to main branch
-   - Configuration in `vercel.json` handles routing
+1. **Wake up the backend** (if needed):
+   - Visit https://bug-tracker-cl1u.onrender.com/ in your browser
+   - Wait for it to respond (may take 30-60 seconds on first access)
+   - You should see a 404 or confirmation page
 
-### Deploy to Railway/Render (Backend)
+2. **Access the frontend:**
+   - Visit https://bug-tracker-livid-nine.vercel.app/login
+   - The application should now have a working backend connection
+   - Register a new account or login with existing credentials
 
-1. **Connect repository to Railway/Render**
+### Deployment Configuration
 
-2. **Configure environment variables:**
-   - `SUPABASE_URL`
-   - `SUPABASE_KEY`
-   - `SUPABASE_SERVICE_KEY`
-   - `NODE_ENV=production`
-   - `PORT=3001` (auto-assigned by platform)
+**Backend Environment Variables (Render):**
+- `SUPABASE_URL` - Supabase project URL
+- `SUPABASE_KEY` - Supabase anonymous key
+- `SUPABASE_SERVICE_KEY` - Supabase service role key
+- `NODE_ENV` - Set to `production`
+- `PORT` - Auto-assigned by Render (default 3001)
 
-3. **Deploy:**
-   - Platform auto-deploys on push to main branch
-   - Ensure `package.json` has start script
+**Frontend Environment Variables (Vercel):**
+- `VITE_SUPABASE_URL` - Supabase project URL
+- `VITE_SUPABASE_KEY` - Supabase anonymous key
+- `VITE_API_BASE_URL` - Set to `https://bug-tracker-cl1u.onrender.com/api`
 
 ### Database Migration (Production)
 
