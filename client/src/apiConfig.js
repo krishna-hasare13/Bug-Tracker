@@ -1,5 +1,5 @@
-const API_URL = import.meta.env.MODE === 'production' 
-  ? 'https://YOUR-RENDER-URL.onrender.com/api' 
-  : 'http://localhost:5000/api'; // <--- MAKE SURE /api IS HERE
+// This looks for a variable named "VITE_API_URL"
+// If it doesn't find one (like on localhost), it defaults to localhost:5000
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 export default API_URL;
