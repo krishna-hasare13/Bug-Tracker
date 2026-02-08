@@ -56,14 +56,22 @@ const ProjectBoard = () => {
   };
 
   const handleCreateTicket = async (e) => {
-    e.preventDefault();
-    if (!newTask.title) return;
-    try {
-      const res = await axios.post(`${API_URL}/tickets`, { ...newTask, project_id: projectId });
-      setTickets((prev) => [...prev, res.data]); 
-      setNewTask({ title: '', status: 'todo' });
-    } catch (err) { alert("Error creating ticket."); }
-  };
+  e.preventDefault();
+  if (!newTask.title) return;
+  try {
+    // 1. Send to Backend
+    await axios.post(`${API_URL}/tickets`, { ...newTask, project_id: projectId });
+    
+    // 2. Clear the form
+    setNewTask({ title: '', status: 'todo' });
+    
+    // ⚠️ REMOVED: setTickets(...) 
+    // We let the useEffect hook handle the update automatically!
+    
+  } catch (err) { 
+    alert("Error creating ticket."); 
+  }
+};
 
   const handleDeleteTicket = async (ticketId, e) => {
     e.stopPropagation();
