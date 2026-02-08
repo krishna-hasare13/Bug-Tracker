@@ -1,46 +1,77 @@
 import { useEffect, useState, useContext } from 'react';
-import axios from 'axios';
+import axios from 'axios'; // ✅ Added Axios import
+import API_URL from '../apiConfig'; 
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
 const Dashboard = () => {
   const { user, logout } = useContext(AuthContext);
+  
+  // ✅ State initialized as empty array []
   const [projects, setProjects] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [newProject, setNewProject] = useState({ name: '', description: '' });
   const navigate = useNavigate();
 
+  // ✅ Helper to get Token
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem('token');
+    return { headers: { Authorization: `Bearer ${token}` } };
+  };
+
   useEffect(() => { fetchProjects(); }, []);
 
   const fetchProjects = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/projects');
-      setProjects(res.data);
-    } catch (err) { console.error(err); }
+      const res = await axios.get(`${API_URL}/projects`, getAuthHeaders());
+      
+      // ✅ SAFETY CHECK: Only update state if data is an Array
+      if (Array.isArray(res.data)) {
+        setProjects(res.data);
+      } else if (res.data && Array.isArray(res.data.data)) {
+        // Handle case where data is wrapped like { data: [...] }
+        setProjects(res.data.data);
+      } else {
+        console.warn("API response is not an array:", res.data);
+        setProjects([]); // Fallback to empty array to prevent crash
+      }
+      
+    } catch (err) { 
+      console.error("Fetch Error:", err); 
+      setProjects([]); // Prevent crash on error
+    }
   };
 
   const handleCreate = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/projects', newProject);
-      setProjects([...projects, res.data]);
+      const res = await axios.post(`${API_URL}/projects`, newProject, getAuthHeaders());
+      
+      // ✅ Append new project safely
+      setProjects((prev) => [...prev, res.data]);
+      
       setShowModal(false);
       setNewProject({ name: '', description: '' });
-    } catch (err) { alert('Failed to create project'); }
+    } catch (err) { 
+      console.error(err);
+      alert('Failed to create project'); 
+    }
   };
 
   const handleDeleteProject = async (projectId, e) => {
     e.stopPropagation();
     if (!window.confirm("Delete this project and all tickets?")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/projects/${projectId}`);
+      await axios.delete(`${API_URL}/projects/${projectId}`, getAuthHeaders());
       setProjects((prev) => prev.filter(p => p.id !== projectId));
-    } catch (err) { alert("Failed to delete project."); }
+    } catch (err) { 
+      alert("Failed to delete project."); 
+    }
   };
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* 🔹 Modern Gradient Navbar */}
+      {/* 🔹 Navbar */}
       <nav className="bg-white/80 backdrop-blur-md sticky top-0 z-10 border-b border-slate-200 px-6 py-4 flex justify-between items-center">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">B</div>
@@ -103,7 +134,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* 🔹 Modal with Backdrop Blur */}
+      {/* 🔹 Create Project Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
           <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md border border-slate-100 transform transition-all scale-100">
